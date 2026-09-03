@@ -1,0 +1,4 @@
+.opencode
+
+# Credenciais de APIs (nunca versionar)
+.env
