@@ -191,7 +191,7 @@ Cumpre o tema (Ordenação) com profundidade: o aluno mostra que domina o algori
 
 ```
 Camada de Serviço / Ingestão (Node.js)
-  auth_server.js (módulo http nativo, localhost:8888)
+  auth_server.js (módulo http nativo, 127.0.0.1:8888)
     └── login Spotify → callback → token → GET /v1/me/top/tracks → data/spotify_me.json
   fetch_sources.js
     ├── Deezer  (chart global)   → data/deezer.json
@@ -247,7 +247,7 @@ Camada de Aplicação (web estática — abrir index.html)
 
 ### 12.7 Spotify — autenticação e dados pessoais
 - Fluxo **Authorization Code** (login do usuário), **não** client-credentials.
-- **Redirect URI:** `http://localhost:8888/callback` (importante neste fluxo — precisa ser exato e configurado no app do Spotify).
+- **Redirect URI:** `http://127.0.0.1:8888/callback` (importante neste fluxo — precisa ser exato e configurado no app do Spotify, idêntico ao listen do `auth_server.js`).
 - **Escopo:** `user-top-read` (para `/me/top/tracks`). Opcional: `user-read-recently-played` (para `F9`).
 - Endpoint: `GET /v1/me/top/tracks?time_range=short_term` (e `medium_term`/`long_term` como alternativas).
 - **Token:** guardar `access_token` + `refresh_token`; renovar com `grant_type=refresh_token`; cachear resultados em `data/spotify_me.json`.
@@ -267,7 +267,6 @@ Camada de Aplicação (web estática — abrir index.html)
 - **Figma (arquivo EDA2):** https://www.figma.com/design/CZu2sZI1QmP1wofgDQPM8L/EDA2
 - **Página de destino:** **Algoritmo de Ordenação**
 - **Node do design system:** [Editar no Figma](https://www.figma.com/design/CZu2sZI1QmP1wofgDQPM8L/EDA2?node-id=16-2)
-- **Preview local:** `design-system-preview.html`
 
 ### 13.2 Conceito visual
 > **"Music Intelligence"** — interface escura, sofisticada e orientada a dados, com energia de plataformas musicais (Spotify, Apple Music, Deezer) **sem** copiar a identidade de nenhuma delas.
@@ -299,7 +298,7 @@ Camada de Aplicação (web estática — abrir index.html)
 ### 13.4 Tipografia
 - **Display:** Georgia / serif — títulos e emoção editorial.
 - **Body:** Inter / sans-serif — interface.
-- **Mono:** SFMono / monospace — métricas (`τ`, `O(n log n)`, posições, scores).
+- **Mono:** Consolas / monospace (variante JetBrains Mono usada no Figma) — métricas (`τ`, `O(n log n)`, posições, scores).
 - Escala: `--text-xs` 12px → `--text-2xl` 30px → `--text-3xl` clamp(44–104px, hero).
 
 ### 13.5 Espaçamento e raios
@@ -334,7 +333,7 @@ Camada de Aplicação (web estática — abrir index.html)
 - Frontend é **HTML5/CSS3/JS puro** (sem bibliotecas de UI/gráficos no MVP) → o design system é convertido para `style.css` e classes/componentes, **não** para um framework.
 - Heatmap/gráficos via **canvas/CSS puro**.
 
-> **Nota de iteração:** a v1 foi publicada como **frames visuais** (captura fiel do `design-system-preview.html`). Pode ser refeita com **componentes/auto-layout nativos do Figma** para melhor reutilização — tokens e valor visual permanecem.
+> **Nota de iteração:** a v1 foi publicada como **frames visuais** no próprio **Figma** (fonte de verdade visual do design system). Pode ser refeita com **componentes/auto-layout nativos do Figma** para melhor reutilização — tokens e valor visual permanecem.
 
 ---
 
