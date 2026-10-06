@@ -1,205 +1,252 @@
-# G20_Ordenacao_EDA2-2026.2
+# Ranking Consensus Engine · "Meu gosto vs o Mundo"
 
-**Número do trabalho:** 2 <br>
-**Conteúdo do Módulo:** Ordenação <br>
-**Disciplina:** Estrutura de Dados 2 (2026.2)
+**Trabalho 2 — Ordenação** · Disciplina: **Estrutura de Dados 2 (2026.2)** · Equipe **G20**
 
-## Alunos
+| Matrícula | Nome completo |
+| :-------: | :------------ |
+| 232037937 | Italo Alves Sampaio de Oliveira |
+| 221008202 | José Eduardo Vieira do Prado |
 
-| Matrícula |          Nome Completo           |
-| :-------: | :------------------------------: |
-| 232037937 | Italo Alves Sampaio de Oliveira  |
-| 221008202 | José Eduardo Vieira do Prado     |
+Aplicação web que compara **a sua lista pessoal de músicas mais tocadas** (Spotify, via login) com **charts reais** (Deezer e Apple/iTunes) e responde, com rigor matemático, *"o meu gosto está alinhado com o que o mundo escuta?"*.
 
-## Sobre o trabalho
+O diferencial técnico não é "ordenar uma lista": é usar o **Merge Sort** pela sua **contagem de inversões em `O(n log n)`** — o que permite calcular a **correlação de Kendall-Tau** entre rankings de forma eficiente e derivar **consenso** (fusão Borda) e **divergência** ("minha bolha").
 
-**Ranking Consensus Engine · "Meu gosto vs o Mundo"** é uma ferramenta web que compara **a sua lista pessoal de músicas mais tocadas** (via Spotify, com login) com os **charts globais reais** (Deezer e Apple/iTunes), usando **Merge Sort** de uma forma incomum: a **contagem de inversões**, que alimenta a **correlação de Kendall-Tau**. O resultado é uma visão objetiva de quais das suas músicas são **hits consenso** (o mundo concorda com você) e quais são a **sua bolha** (só você / underground).
+> **Relatório acadêmico completo:** [`ranking-consensus/relatorio.md`](ranking-consensus/relatorio.md).
 
-### Objetivo
+---
 
-- Integrar **APIs reais**: Spotify (com **OAuth de usuário / login**), Deezer e Apple/iTunes
-- Implementar **Merge Sort com contagem de inversões** em `O(n log n)` e aplicá-lo à correlação de Kendall-Tau
-- **Comparar seu gosto com o mundo** (matriz de correlação / heatmap) e descobrir o quão "mainstream" você é
-- Gerar um **super-ranking de consenso** (fusão Borda) e classificar músicas em **"apostas seguras" vs "minha bolha"**
-- Provar rigorosamente a diferença `O(n log n)` vs `O(n²)` com benchmark e testes automatizados
-- Oferecer interface amigável, com modo **cache determinístico** (demo/relatório reprodutíveis)
-
-## Como usar
-
-### Pré-requisitos
-
-- **Node.js 18+** (usa `fetch` global nativo, sem dependências externas)
-- Um navegador web moderno (Chrome, Firefox, Edge, Safari)
-- _(Para o Spotify)_ um app gratuito no **Spotify for Developers** e as credenciais no `.env`
-
-### Passo a passo
-
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/G20_Ordenacao_EDA2-2026.2.git
-   cd G20_Ordenacao_EDA2-2026.2/ranking-consensus
-   ```
-
-2. Configure as credenciais:
-   ```bash
-   cp .env.example .env
-   # edite .env e preencha SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET e SPOTIFY_REDIRECT_URI
-   ```
-   > **Importante (OAuth):** a `SPOTIFY_REDIRECT_URI` precisa ser **exatamente** `http://127.0.0.1:8888/callback` — idêntica à cadastrada no app do Spotify e à porta/host usada pelo `auth_server.js`.
-
-3. _(Opcional — para incluir seus dados do Spotify)_ gere as suas top tracks:
-   ```bash
-   node scripts/auth_server.js
-   ```
-   O app abre o login do Spotify; ao autorizar, salva `data/spotify_me.json`.
-
-4. Colete os charts globais (Deezer + iTunes) e gere o snapshot do browser:
-   ```bash
-   node scripts/fetch_sources.js
-   node scripts/build_snapshot.js   # junta os JSON em data/snapshot.js
-   ```
-   > **Por que o `snapshot.js`?** A página abre via `file://` (sem servidor), e `fetch()` de `.json` local é bloqueado por CORS. Assim, os coletores Node gravam os `data/*.json` (fonte de verdade) e o `build_snapshot.js` gera `data/snapshot.js` (`window.RANK_SNAPSHOT`), que é o que o `index.html` carrega.
-
-5. Abra a aplicação no navegador:
-   ```bash
-   # Windows
-   start index.html
-
-   # macOS
-   open index.html
-
-   # Linux
-   xdg-open index.html
-   ```
-
-6. Na interface:
-   - Veja a **matriz de correlação** (heatmap) entre **você**, Deezer e iTunes
-   - Confira o **super-ranking de consenso** e os destaques de **"aposta segura" vs "minha bolha"**
-
-> **Modo cache (MVP):** a interface lê os dados já congelados em `data/` (via `snapshot.js`) — demo/relatório reprodutíveis, sem depender de rede. O login Spotify (`auth_server.js`) é opcional e só é necessário para **gerar** `data/spotify_me.json`.
-
-## Dados de exemplo
-
-> _Os valores da tabela serão preenchidos após a primeira coleta real de dados._
-
-| Fonte            | Ranking obtido                          | Itens | Observação                                  |
-| ---------------- | --------------------------------------- | ----: | ------------------------------------------- |
-| Spotify (você)   | Suas mais tocadas (`/me/top/tracks`)    |  100  | Requer login OAuth                          |
-| Deezer           | Chart global top 100                    |  100  | Sem chave                                   |
-| Apple/iTunes     | Top songs (RSS, EUA)                    |  100  | Sem chave, região EUA                       |
-| **Interseção**   | _a definir após a coleta_               |  TBD  | Somente músicas presentes em ≥2 fontes      |
-
-## Screenshots (demonstração)
-
-> _As imagens serão adicionadas após a implementação._
-
-- Heatmap de correlação **você × Deezer × iTunes**
-- Super-ranking de consenso
-- Seção "Apostas seguras vs Minha bolha"
-
-## Algoritmos implementados
-
-### Merge Sort — contagem de inversões (o coração do projeto)
-
-Além de ordenar, o **Merge Sort** conta quantas **inversões** existem em um array durante o próprio passo de *merge*, em tempo `O(n log n)`.
-
-**Complexidade:**
-- Tempo: `O(n log n)` — contagem de inversões
-- Espaço: `O(n)` — para o array temporário do merge
-
-No ranqueamento, cada inversão corresponde a um **par discordante** entre duas classificações. Isso alimenta a **correlação de Kendall-Tau**, que responde "o ranking da fonte X concorda com o da fonte Y?" — aqui, inclusive, **"o seu gosto concorda com o do mundo?"**.
-
-### Correlação de Kendall-Tau
+## 1. Como funciona
 
 ```
-tau = (concordante - discordante) / total
-total = n * (n - 1) / 2
+[Node]  auth_server.js        login Spotify (OAuth) → data/spotify_me.json
+        fetch_sources.js      Deezer + iTunes         → data/deezer.json / itunes.json
+        build_snapshot.js     junta os JSON           → data/snapshot.js (window.RANK_SNAPSHOT)
+                                       │  (dados reais congelados — modo cache)
+                                       ▼
+[Browser, file://]  index.html → js/*
+  1. Matching        chave normalizada "título|artista" (utils.js)
+  2. Inversões       Merge Sort O(n log n)               (mergesort.js)
+  3. Kendall-Tau     matriz de correlação por par        (kendall.js)
+  4. Borda           super-ranking de consenso           (consensus.js)
+  5. Divergência     "apostas seguras" vs "minha bolha"  (consensus.js + app.js)
 ```
 
-- `+1` → concordância perfeita
-- `-1` → discordância perfeita
-- `0` → sem relação de ordem
+O cálculo roda **inteiramente no navegador**; o Node apenas **coleta os dados** (resolve CORS e protege o token server-side). A página abre por `file://`, **sem servidor**.
 
-### Super-ranking de consenso (fusão Borda)
+### O pulo do gato
 
-Cada música recebe pontos pela posição em cada fonte (quanto melhor a posição, mais pontos) e soma-se entre as fontes. O resultado é uma classificação única ("o melhor segundo todas as fontes juntas").
+Contar inversões por força bruta custa `O(n²)`. No **Merge Sort**, a contagem sai de graça no passo de `merge`, em `O(n log n)`. Cada inversão = um **par discordante** entre dois rankings → é exatamente o que a **Kendall-Tau** precisa. Daí saem: **quão "mainstream" você é** (`τ` entre você e o mundo), o **super-ranking** de consenso (Borda) e o **score de divergência** por faixa.
 
-### Apostas seguras vs Minha bolha
+---
 
-Para cada música, soma-se a fração de inversões em que ela participa. Alta divergência ⇒ **minha bolha**; baixa ⇒ **aposta segura**.
+## 2. Fontes de dados
 
-## Estrutura do projeto
+| Fonte | Endpoint | Auth | O que entrega |
+| --- | --- | --- | --- |
+| **Spotify (pessoal)** | `/v1/me/top/tracks?time_range=long_term&limit=50` | **OAuth Authorization Code** (`user-top-read`) | Suas mais tocadas |
+| **Deezer** | `api.deezer.com/chart/0/tracks?limit=100` | Nenhuma | Chart **da região** (regionaliza pelo IP) |
+| **Apple/iTunes** | `itunes.apple.com/br/rss/topsongs/limit=100/json` | Nenhuma | Top songs (storefront **Brasil**) |
 
+- `position` de cada faixa = **índice 0-based** no array da API (uniforme entre as fontes).
+- Matching por **chave normalizada** `título|artista` (sem acentos, minúscula, sem pontuação/sufixos como `(feat.)`, `(Remix)`, `(Live)`, `Explicit`; artista = primeiro antes da vírgula).
+- **Threshold:** pares com **menos de 15** faixas em comum são sinalizados como **"interseção insuficiente"** (não entram na matriz).
+
+---
+
+## 3. Pré-requisitos
+
+- **Node.js 18+** (usa `fetch` global nativo). **Zero dependências** — não há `npm install`.
+- Um navegador moderno (Chrome, Firefox, Edge, Safari).
+- _(Opcional, só para os seus dados do Spotify)_ um app no **Spotify for Developers** — ver [§5](#5-configurar-o-spotify-oauth).
+
+---
+
+## 4. Como rodar
+
+### Modo rápido (cache) — sem login, sem rede
+
+O repositório já inclui os dados coletados em `data/`. Basta **abrir `ranking-consensus/index.html`** no navegador (`file://`).
+
+```bash
+# Windows
+start ranking-consensus/index.html
+# macOS
+open ranking-consensus/index.html
+# Linux
+xdg-open ranking-consensus/index.html
 ```
-ranking-consensus/
-├── index.html              # Interface principal
-├── css/
-│   └── style.css           # Design system e estilos
-├── js/
-│   ├── app.js              # Lógica da aplicação e manipulação do DOM
-│   ├── mergesort.js        # ⭐ Merge Sort + contagem de inversões
-│   ├── kendall.js          # Correlação de Kendall-Tau (via inversões)
-│   ├── consensus.js        # Super-ranking (Borda) + apostas seguras vs bolha
-│   ├── sources.js          # Registro e carregamento das fontes
-│   └── utils.js            # Funções utilitárias (normalização, formatação)
-├── scripts/
-│   ├── auth_server.js      # OAuth Spotify (login) → data/spotify_me.json
-│   ├── fetch_sources.js    # Coleta Deezer + iTunes → data/
-│   ├── build_snapshot.js   # Junta os JSON → data/snapshot.js (browser)
-│   └── run_benchmark.js    # Benchmark O(n log n) vs O(n²) p/ o relatório
-├── data/
-│   ├── spotify_me.json     # Suas mais tocadas (cache)
-│   ├── deezer.json         # Chart global Deezer (cache)
-│   ├── itunes.json         # Top songs iTunes (cache)
-│   └── snapshot.js         # Dados p/ o browser (o app não usa fetch() em file://)
-├── tests/
-│   ├── test_node.js        # Testes automatizados (Node.js)
-│   └── test_manual.html    # Testes manuais (navegador)
-└── .env.example            # Modelo de credenciais (Spotify)
+
+### Modo completo — coletar dados reais e regenerar o snapshot
+
+```bash
+cd ranking-consensus
+
+# 1) (Opcional) suas top tracks do Spotify — ver §5 para o login
+node scripts/auth_server.js            # 1ª vez: abre o login no navegador
+node scripts/auth_server.js --refresh  # depois: renova o token salvo, sem navegador
+
+# 2) Charts (Deezer da região + iTunes Brasil)
+node scripts/fetch_sources.js
+
+# 3) Gera o snapshot do browser + imprime o match-rate por par
+node scripts/build_snapshot.js
+
+# 4) Abra a aplicação
+start index.html
 ```
 
-## Tecnologias utilizadas
+> **Por que `snapshot.js`?** Abrindo via `file://`, `fetch()` de `.json` local é bloqueado por CORS. Então os coletores gravam `data/*.json` (fonte de verdade) e o `build_snapshot.js` gera `data/snapshot.js` (`window.RANK_SNAPSHOT`), que o `index.html` carrega via `<script>`.
 
-| Tecnologia                | Uso                                                               |
-| :-----------------------: | :---------------------------------------------------------------- |
-| HTML5                     | Estrutura semântica da interface                                  |
-| CSS3                      | Design system com Custom Properties                               |
-| JavaScript (ES6+)         | Algoritmos e lógica da aplicação (puro, sem frameworks)           |
-| Node.js (fetch + http)    | OAuth Spotify, coleta de APIs (Deezer/iTunes), benchmark, testes  |
-| Spotify OAuth             | **Authorization Code** (login de usuário) — dados pessoais        |
+---
 
-## Executando os testes
+## 5. Configurar o Spotify (OAuth)
 
-### Testes automatizados (Node.js)
+1. Acesse **https://developer.spotify.com/dashboard** → **Create app**.
+   > Desde 2026, apps em *Development Mode* exigem que o **dono tenha Spotify Premium ativo**.
+2. Em **Settings**, cadastre a **Redirect URI exatamente** como:
+   ```
+   http://127.0.0.1:8888/callback
+   ```
+   (Loopback `127.0.0.1` é permitido em HTTP; **`localhost` não é aceito**.)
+3. Copie **Client ID** e **Client Secret**.
+4. Crie o `.env` (a partir de `ranking-consensus/.env.example`) e preencha:
+
+   ```env
+   SPOTIFY_CLIENT_ID=seu_client_id
+   SPOTIFY_CLIENT_SECRET=seu_client_secret
+   SPOTIFY_REDIRECT_URI=http://127.0.0.1:8888/callback
+   SPOTIFY_SCOPES=user-top-read
+   SPOTIFY_TIME_RANGE=long_term
+   SPOTIFY_TOP_LIMIT=50
+   ```
+
+   > **Onde fica o `.env`:** os scripts procuram o `.env` no diretório de execução **e** em `ranking-consensus/`. Pode ficar na **raiz do repositório** (rode os comandos de lá) ou em `ranking-consensus/.env`. O `.env` e o token `.spotify_tokens.json` são **ignorados pelo git**.
+
+5. Rode `node scripts/auth_server.js` e abra **http://127.0.0.1:8888/**. Ao autorizar, o app salva `data/spotify_me.json` e o token em `ranking-consensus/.spotify_tokens.json`.
+
+---
+
+## 6. Comandos (resumo)
+
+Executados a partir de `ranking-consensus/` (ou da raiz com `node ranking-consensus/scripts/...`).
+
+| Comando | O que faz |
+| --- | --- |
+| `node scripts/auth_server.js` | Login OAuth Spotify → `data/spotify_me.json` |
+| `node scripts/auth_server.js --refresh` | Renova o token salvo e regrava as top tracks (sem navegador) |
+| `node scripts/fetch_sources.js` | Coleta Deezer + iTunes → `data/*.json` |
+| `node scripts/build_snapshot.js` | Gera `data/snapshot.js` + match-rate por par |
+| `node scripts/run_benchmark.js` | Benchmark Merge vs força bruta |
+| `node tests/test_node.js` | Testes do algoritmo (inversões/Kendall) |
+| `node --test tests/test_issue5.js` | Testes da coleta/OAuth/snapshot |
+| `node --test tests/test_consensus.js` | Testes de Borda/divergência/match-rate |
+| `node --test tests/test_utils.js` | Testes de matching (normalização/dedupe/interseção) |
+| `node --test tests/test_app_identity.js` | Regressão da identidade de chaves no app |
+
+---
+
+## 7. Testes e benchmark
+
+**36 testes automatizados**, zero dependências (`node:assert` / `node:test`):
 
 ```bash
 cd ranking-consensus
 node tests/test_node.js
+node --test tests/test_issue5.js tests/test_consensus.js tests/test_utils.js tests/test_app_identity.js
 ```
 
-### Benchmark (O(n log n) vs O(n²))
+Teste **manual** (navegador): abra `ranking-consensus/tests/test_manual.html` (`file://`) — executa inversões, Kendall, `normalizeKey`, Borda e `classify` com contador pass/fail.
 
-```bash
-cd ranking-consensus
-node scripts/run_benchmark.js
+**Benchmark** (`node scripts/run_benchmark.js`) — contagem de inversões, dados determinísticos:
+
+| n | Merge (ms) | Força bruta (ms) | razão |
+| --: | --: | --: | --: |
+| 1.000 | 1.065 | 3.945 | 3.70× |
+| 2.000 | 0.910 | 5.532 | 6.08× |
+| 5.000 | 1.429 | — (força bruta limitada) | — |
+| 10.000 | 3.937 | — | — |
+| 20.000 | 6.579 | — | — |
+
+A força bruta é limitada a `n = 2.000` (evita `O(n²)` inviável); o Merge escala linearmente em `n log n`. Tempos variam conforme a máquina.
+
+---
+
+## 8. Resultados (dados reais)
+
+Snapshot coletado em **06/10/2026** (modo cache):
+
+| Fonte | Itens | Observação |
+| --- | --: | --- |
+| Spotify (você) | 50 | `long_term` |
+| Deezer | 100 | Chart da região |
+| iTunes | 92 | Storefront Brasil |
+| **Interseção** | **0 / 0 / 3** | `me×Deezer = 0`, `me×iTunes = 0`, `Deezer×iTunes = 3` |
+
+Todos os pares ficaram **abaixo do threshold (15)** → a matriz é exibida com o estado **"interseção insuficiente"** e a leitura **"seu gosto é bolha"**.
+
+> **Isso é um resultado válido, não um erro.** O produto mede consenso/divergência: para um gosto divergente dos charts, a interseção baixa é a própria resposta (ver `docs/DECISIONS.md`, ADR-010). Ouvintes mais mainstream tendem a produzir interseções maiores.
+
+---
+
+## 9. Estrutura do projeto
+
+```
+G20_Ordenacao_EDA2-2026.2/
+├── README.md
+├── docs/                          # Contexto do projeto (PRODUCT, DESIGN, API, DATA_MODEL, DECISIONS, WORKFLOWS)
+└── ranking-consensus/
+    ├── index.html                 # Interface (carrega data/snapshot.js + js/*)
+    ├── relatorio.md               # Relatório acadêmico
+    ├── css/style.css              # Design system (Custom Properties)
+    ├── js/
+    │   ├── mergesort.js           # ⭐ Merge Sort + contagem de inversões (UMD)
+    │   ├── kendall.js             # Kendall-Tau via inversões (UMD)
+    │   ├── utils.js               # Normalização/matching (UMD)
+    │   ├── consensus.js           # Borda + divergência/classify + match-rate (UMD)
+    │   ├── sources.js             # Registro das fontes + loader do snapshot
+    │   └── app.js                 # Orquestração da análise + render do DOM
+    ├── scripts/
+    │   ├── auth_server.js         # OAuth Spotify (Authorization Code)
+    │   ├── fetch_sources.js       # Coleta Deezer + iTunes
+    │   ├── build_snapshot.js      # Gera data/snapshot.js
+    │   └── run_benchmark.js       # Benchmark O(n log n) vs O(n²)
+    ├── data/                      # Snapshots reais (commitados) + snapshot.js
+    ├── tests/                     # testes Node (*.js) + teste manual (test_manual.html)
+    └── .env.example               # Modelo de credenciais (Spotify)
 ```
 
-### Testes manuais (navegador)
+---
 
-Abra `ranking-consensus/tests/test_manual.html` no navegador.
+## 10. Decisões & limitações
 
-## Vídeo (demonstração)
+- **Merge Sort** é usado pela **contagem de inversões** (`O(n log n)`); a implementação copia subarrays (`slice`), então o espaço total é `O(n log n)` de alocações (o bound clássico `O(n)` vale para a variante com buffer único).
+- **Cache determinístico:** a demo lê `data/` e funciona offline; os charts congelam na data da coleta.
+- **Threshold `<15`** de interseção (pares sinalizados) e **narrativa "bolha"** — ver `docs/DECISIONS.md` (ADR-006/ADR-009/ADR-010).
+- **Zero dependências** em todo o projeto (HTML/CSS/JS puro + Node built-ins).
+- Design system (tokens/componentes): [Figma EDA2 · node 16-2](https://www.figma.com/design/CZu2sZI1QmP1wofgDQPM8L/EDA2?node-id=16-2) — refletido em `css/style.css`.
 
-> _Adicionar link do vídeo de apresentação após a conclusão._
+---
 
-[Apresentação G20 - Ordenação 2026.2](https://youtu.be/linkaqui)
+## 11. Screenshots e vídeo
 
-## Créditos e referências
+> _Adicionar após a gravação da apresentação._
 
-- **Disciplina:** Estrutura de Dados 2 — 2026.2
-- **Merge Sort / contagem de inversões:** CORMEN, T. H. et al. *Introduction to Algorithms*. 4. ed. Cambridge: MIT Press, 2022.
+- Heatmap de correlação **Você × Deezer × iTunes**
+- Super-ranking de consenso (Borda)
+- Painéis "Apostas seguras" vs "Minha bolha"
+
+**Vídeo:** [Apresentação G20 — Ordenação 2026.2](https://youtu.be/linkaqui)
+
+---
+
+## 12. Referências
+
+- **Merge Sort / contagem de inversões:** CORMEN, T. H. et al. *Introduction to Algorithms*. 4. ed. MIT Press, 2022.
 - **Correlação de Kendall:** KENDALL, M. G. *A new measure of rank correlation*. Biometrika, v. 30, 1938.
-- **Spotify Web API:** [developer.spotify.com](https://developer.spotify.com/documentation/web-api/)
-- **Deezer API:** [developers.deezer.com](https://developers.deezer.com/api)
-- **Apple/iTunes RSS:** [itunes.apple.com](https://itunes.apple.com/)
-- **Implementação:** Desenvolvida integralmente pela equipe G20
+- **Spotify Web API:** https://developer.spotify.com/documentation/web-api/
+- **Deezer API:** https://developers.deezer.com/api
+- **Apple/iTunes RSS:** https://itunes.apple.com/
+
+---
+
+**Implementação:** desenvolvida integralmente pela equipe **G20** (EDA2 · 2026.2).

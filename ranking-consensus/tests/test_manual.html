@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Testes manuais · Ranking Consensus</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; }
+    body { max-width: 760px; margin: 2rem auto; padding: 0 1rem; color: #18202d; }
+    h1 { margin-bottom: .25rem; } .summary { font-weight: 700; }
+    li { margin: .45rem 0; } .pass { color: #146c2e; } .fail { color: #a21d1d; }
+    code { background: #eef2f6; padding: .1rem .25rem; }
+  </style>
+</head>
+<body>
+  <h1>Testes manuais</h1>
+  <p>Abra este arquivo diretamente via <code>file://</code>. Os módulos são carregados sem ES modules.</p>
+  <p id="summary" class="summary" aria-live="polite">Executando…</p>
+  <ol id="results"></ol>
+  <script src="../js/mergesort.js"></script>
+  <script src="../js/kendall.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/consensus.js"></script>
+  <script>
+    (function () {
+      var results = document.getElementById('results');
+      var passed = 0; var failed = 0;
+      function check(name, fn) {
+        var item = document.createElement('li');
+        try { fn(); passed += 1; item.className = 'pass'; item.textContent = 'PASS — ' + name; }
+        catch (error) { failed += 1; item.className = 'fail'; item.textContent = 'FAIL — ' + name + ': ' + error.message; }
+        results.appendChild(item);
+      }
+      function equal(actual, expected) { if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(JSON.stringify(actual) + ' != ' + JSON.stringify(expected)); }
+      check('countInversions', function () { equal(MergeSort.countInversions([3, 1, 2]), 2); });
+      check('kendallTau', function () { equal(Kendall.kendallTau(['a', 'b', 'c'], ['c', 'b', 'a']).tau, -1); });
+      check('normalizeKey', function () { equal(RankingConsensusUtils.normalizeKey('Coração (Live)', 'Beyoncé, Guest'), 'coracao|beyonce'); });
+      check('bordaSuperRanking', function () { var source = function (id, items) { return { id: id, items: items.map(function (key, position) { return { key: key, title: key, position: position }; }) }; }; equal(Consensus.bordaSuperRanking([source('a', ['x', 'y']), source('b', ['y', 'x'])])[0].points, 3); });
+      check('classify', function () { equal(Consensus.classify({ fraction: .9 }, [{ fraction: 0 }, { fraction: .2 }, { fraction: .9 }]), 'bubble'); });
+      document.getElementById('summary').textContent = passed + ' passaram / ' + failed + ' falharam (' + (passed + failed) + ' testes)';
+    }());
+  </script>
+</body>
+</html>
