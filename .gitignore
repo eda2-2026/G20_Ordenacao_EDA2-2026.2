@@ -2,3 +2,6 @@
 
 # Credenciais de APIs (nunca versionar)
 .env
+
+# Spotify OAuth tokens (local only; never versionar)
+/ranking-consensus/.spotify_tokens.json
