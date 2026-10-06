@@ -10,18 +10,14 @@
 <body>
   <div class="shell">
     <header class="topbar" aria-label="Navegação principal">
-      <a class="brand" href="#dashboard" aria-label="Ranking Consensus, início">
-        <span class="brand-mark" aria-hidden="true">τ</span>
-        <span><strong>Ranking Consensus</strong><small>Music intelligence · EDA2</small></span>
-      </a>
-      <nav class="nav" aria-label="Seções do dashboard">
-        <a href="#dashboard">Dashboard</a><a href="#analysis">Análise</a><a href="#states">Status</a>
-      </nav>
+      <a class="brand" href="#dashboard" aria-label="Ranking Consensus, início"><span class="brand-mark" aria-hidden="true">τ</span><span><strong>Ranking Consensus</strong><small>Music intelligence · EDA2</small></span></a>
+      <nav class="nav" aria-label="Seções do dashboard"><a href="#dashboard">Dashboard</a><a href="#analysis">Análise</a><a href="#states">Status</a></nav>
       <button class="btn btn--spotify" type="button" aria-describedby="spotify-status">● Conectar Spotify</button>
     </header>
 
     <main id="dashboard">
       <p id="spotify-status" class="sr-only">Integração futura. Esta demonstração usa dados em cache local.</p>
+
       <section class="hero" aria-labelledby="hero-title">
         <div>
           <div class="eyebrow">Seu gosto, em perspectiva</div>
@@ -31,52 +27,54 @@
         </div>
         <aside class="signal" aria-label="Resumo do alinhamento pessoal">
           <div class="signal__label">Alinhamento com o mainstream</div>
-          <div class="signal__value">0.68 <span>τ</span></div>
-          <p class="signal__note">Seu ranking conversa bastante com Deezer e iTunes.</p>
-          <div class="progress" role="progressbar" aria-label="Alinhamento com o mainstream" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0.68"><span></span></div>
+          <div class="signal__value" data-hook="signal-value">— <span>τ</span></div>
+          <p class="signal__note" data-hook="signal-note">Calculando o snapshot…</p>
+          <div class="progress" role="progressbar" aria-label="Alinhamento com o mainstream" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0"><span data-hook="signal-progress"></span></div>
         </aside>
       </section>
 
       <section class="section" aria-labelledby="metrics-title">
-        <div class="section-heading"><div><div class="eyebrow">Snapshot da análise</div><h2 id="metrics-title">O sinal em quatro números</h2></div><p>Dados demonstrativos congelados para uma apresentação reprodutível. Substituíveis pelo snapshot futuro.</p></div>
+        <div class="section-heading"><div><div class="eyebrow">Snapshot da análise</div><h2 id="metrics-title">O sinal em quatro números</h2></div><p data-hook="snapshot-note">Dados calculados a partir do snapshot local.</p></div>
         <div class="grid grid--metrics">
-          <article class="card metric"><div class="metric__top"><span>Kendall-Tau médio</span><span class="metric__icon" aria-hidden="true">τ</span></div><div class="metric__value">+0.68</div><div class="metric__delta">↑ concordância positiva</div></article>
-          <article class="card metric"><div class="metric__top"><span>Match-rate</span><span class="metric__icon" aria-hidden="true">%</span></div><div class="metric__value">42%</div><div class="metric__delta">63 de 150 faixas cruzadas</div></article>
-          <article class="card metric"><div class="metric__top"><span>Faixas analisadas</span><span class="metric__icon" aria-hidden="true">#</span></div><div class="metric__value">63</div><div class="metric__delta">interseção qualificada</div></article>
-          <article class="card metric"><div class="metric__top"><span>Fontes ativas</span><span class="metric__icon" aria-hidden="true">◌</span></div><div class="metric__value">03</div><div class="metric__delta">Spotify · Deezer · iTunes</div></article>
+          <article class="card metric"><div class="metric__top"><span>Kendall-Tau médio</span><span class="metric__icon">τ</span></div><div class="metric__value" data-hook="metric-tau">—</div><div class="metric__delta" data-hook="metric-tau-note">aguardando dados</div></article>
+          <article class="card metric"><div class="metric__top"><span>Match-rate</span><span class="metric__icon">%</span></div><div class="metric__value" data-hook="metric-match">—</div><div class="metric__delta" data-hook="metric-match-note">por pares de fontes</div></article>
+          <article class="card metric"><div class="metric__top"><span>Faixas analisadas</span><span class="metric__icon">#</span></div><div class="metric__value" data-hook="metric-tracks">—</div><div class="metric__delta">interseções disponíveis</div></article>
+          <article class="card metric"><div class="metric__top"><span>Fontes ativas</span><span class="metric__icon">◌</span></div><div class="metric__value" data-hook="metric-sources">—</div><div class="metric__delta" data-hook="metric-sources-note">snapshot local</div></article>
         </div>
       </section>
 
       <section class="section" id="analysis" aria-labelledby="analysis-title">
         <div class="section-heading"><div><div class="eyebrow">Componentes em contexto</div><h2 id="analysis-title">O mapa do consenso</h2></div><p>O heatmap combina cor, rótulos e números: a leitura não depende apenas da percepção cromática.</p></div>
         <div class="grid grid--analysis">
-          <article class="card panel">
-            <div class="panel__header"><div><h3>Matriz de correlação</h3><p>Quanto mais brilhante, maior a afinidade entre rankings.</p></div><div class="legend" aria-label="Escala de divergência para consenso"><i aria-hidden="true"></i><span>-1</span><span>+1</span></div></div>
-            <div class="heatmap-wrap"><table class="heatmap"><caption class="sr-only">Matriz de correlação Kendall-Tau entre rankings</caption><thead><tr><th scope="col"></th><th scope="col">EU</th><th scope="col">DEEZER</th><th scope="col">iTUNES</th></tr></thead><tbody><tr><th scope="row">EU</th><td class="diagonal" aria-label="EU com EU, não aplicável">—</td><td aria-label="EU com Deezer, alta concordância">+0.72</td><td aria-label="EU com iTunes, média concordância">+0.51</td></tr><tr><th scope="row">DEEZER</th><td aria-label="Deezer com EU, alta concordância">+0.72</td><td class="diagonal" aria-label="Deezer com Deezer, não aplicável">—</td><td aria-label="Deezer com iTunes, baixa concordância">−0.08</td></tr><tr><th scope="row">iTUNES</th><td aria-label="iTunes com EU, média concordância">+0.51</td><td aria-label="iTunes com Deezer, baixa concordância">−0.08</td><td class="diagonal" aria-label="iTunes com iTunes, não aplicável">—</td></tr></tbody></table></div>
-          </article>
-          <article class="card panel"><div class="panel__header"><div><h3>Super-ranking</h3><p>Fusão Borda · melhores posições combinadas.</p></div><button class="btn btn--ghost" type="button">Ver tudo</button></div><div class="ranking" aria-label="Top três do super-ranking demonstrativo">
-            <div class="track"><span class="track__position">01</span><span class="cover" aria-hidden="true"></span><span><span class="track__title">As It Was</span><span class="track__artist">Harry Styles</span></span><span class="track__score">184 pts</span></div>
-            <div class="track"><span class="track__position">02</span><span class="cover cover--two" aria-hidden="true"></span><span><span class="track__title">Blinding Lights</span><span class="track__artist">The Weeknd</span></span><span class="track__score">176 pts</span></div>
-            <div class="track"><span class="track__position">03</span><span class="cover cover--three" aria-hidden="true"></span><span><span class="track__title">Levitating</span><span class="track__artist">Dua Lipa</span></span><span class="track__score">163 pts</span></div>
-          </div></article>
+           <article class="card panel"><div class="panel__header"><div><h3>Matriz de correlação</h3><p>Quanto mais brilhante, maior a afinidade entre rankings.</p></div><div class="legend"><i aria-hidden="true"></i><span>-1</span><span>+1</span></div></div><div class="heatmap-wrap"><table class="heatmap" aria-label="Matriz de correlação Kendall-Tau entre rankings"><caption class="sr-only">Matriz de correlação Kendall-Tau entre rankings</caption><thead data-hook="heatmap-head"></thead><tbody data-hook="heatmap-body"></tbody></table></div></article>
+          <article class="card panel"><div class="panel__header"><div><h3>Super-ranking</h3><p>Fusão Borda · melhores posições combinadas.</p></div></div><div class="ranking" data-hook="ranking" aria-label="Super-ranking"></div></article>
         </div>
+        <div class="card panel" style="margin-top:16px"><div class="panel__header"><div><h3>Match-rate por par</h3><p>Interseções encontradas entre cada dupla de fontes.</p></div></div><div data-hook="match-rates"></div></div>
       </section>
 
-      <section class="section" aria-labelledby="highlights-title"><div class="section-heading"><div><div class="eyebrow">Descobertas</div><h2 id="highlights-title">Consenso não é julgamento</h2></div><p>As categorias transformam divergência em uma história pessoal: o que aproxima você e o que torna seu gosto singular.</p></div><div class="split">
-        <article class="highlight highlight--safe"><div class="pill-label">Apostas seguras</div><h3>O mundo também deixou no repeat.</h3><p>Faixas com baixa divergência e presença consistente entre as fontes.</p><div><span class="badge badge--safe">baixa divergência</span></div></article>
-        <article class="highlight highlight--bubble"><div class="pill-label">Minha bolha</div><h3>O seu algoritmo secreto.</h3><p>Faixas que vivem mais alto no seu ranking do que nos charts globais.</p><div><span class="badge badge--bubble">alta divergência</span></div></article>
-      </div></section>
+      <section class="section" aria-labelledby="highlights-title">
+        <div class="section-heading"><div><div class="eyebrow">Descobertas</div><h2 id="highlights-title">Consenso não é julgamento</h2></div><p>As categorias transformam divergência em uma história pessoal.</p></div>
+        <div class="split"><article class="highlight highlight--safe"><div class="pill-label">Apostas seguras</div><h3 data-hook="safe-title">Calculando…</h3><p data-hook="safe-copy">Faixas com baixa divergência e presença consistente entre as fontes.</p><div><span class="badge badge--safe" data-hook="safe-list">—</span></div></article><article class="highlight highlight--bubble"><div class="pill-label">Minha bolha</div><h3 data-hook="bubble-title">Calculando…</h3><p data-hook="bubble-copy">Faixas que vivem mais alto no seu ranking do que nos charts globais.</p><div><span class="badge badge--bubble" data-hook="bubble-list">—</span></div></article></div>
+      </section>
 
-      <section class="section" id="states" aria-labelledby="states-title"><div class="section-heading"><div><div class="eyebrow">Pontos de integração</div><h2 id="states-title">Estados da análise</h2></div><p>Slots visuais preparados para os módulos de dados futuros, sem chamadas de API nesta versão.</p></div><div class="states">
-        <article class="state" aria-label="Estado de carregamento"><div class="state__label">Loading</div><div class="skeleton" aria-hidden="true"></div><p class="state__message">Calculando o snapshot…</p></article>
-        <article class="state state--error" aria-label="Estado de erro"><div class="state__label">Erro</div><p class="state__message">Não foi possível ler a fonte. Tente novamente.</p></article>
-        <article class="state state--empty" aria-label="Estado vazio"><div class="state__label">Vazio</div><p class="state__message">Ainda não há faixas para comparar.</p></article>
-        <article class="state state--insufficient" aria-label="Interseção insuficiente"><div class="state__label">Interseção insuficiente</div><p class="state__message">Menos de 15 faixas em comum; sinal não confiável.</p></article>
-      </div></section>
+      <section class="section" id="states" aria-labelledby="states-title">
+        <div class="section-heading"><div><div class="eyebrow">Pontos de integração</div><h2 id="states-title">Estados da análise</h2></div><p>O snapshot local é calculado inteiramente no navegador.</p></div>
+        <div class="states"><article class="state" data-state="loading"><div class="state__label">Loading</div><div class="skeleton"></div><p class="state__message">Calculando o snapshot…</p></article><article class="state state--error" data-state="error"><div class="state__label">Erro</div><p class="state__message">Não foi possível ler a fonte.</p></article><article class="state state--empty" data-state="empty"><div class="state__label">Vazio</div><p class="state__message">Ainda não há faixas para comparar.</p></article><article class="state state--insufficient" data-state="insufficient"><div class="state__label">Interseção insuficiente</div><p class="state__message" data-hook="insufficient-message">Menos de 15 faixas em comum; sinal sinalizado.</p></article></div>
+      </section>
 
-      <section class="section" id="method" aria-labelledby="method-title"><div class="section-heading"><div><div class="eyebrow">Método</div><h2 id="method-title">Uma métrica, uma história</h2></div><p>Kendall-Tau mede concordância entre ordens; Merge Sort fará a contagem eficiente de inversões nas próximas camadas.</p></div></section>
+      <section class="section" id="method" aria-labelledby="method-title">
+        <div class="section-heading"><div><div class="eyebrow">Método</div><h2 id="method-title">Uma métrica, uma história</h2></div><p>Kendall-Tau mede concordância entre ordens; Merge Sort conta inversões eficientemente.</p></div>
+      </section>
     </main>
-    <footer class="footer">Scaffold local do Ranking Consensus Engine · dados demonstrativos substituíveis · <code>file://</code> ready</footer>
+    <footer class="footer">Ranking Consensus Engine · snapshot offline · <code>file://</code> ready</footer>
   </div>
+
+  <script src="data/snapshot.js"></script>
+  <script src="js/mergesort.js"></script>
+  <script src="js/kendall.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/consensus.js"></script>
+  <script src="js/sources.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

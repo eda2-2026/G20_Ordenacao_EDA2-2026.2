@@ -1,0 +1,308 @@
+{
+  "id": "me",
+  "name": "Você",
+  "color": "spotify",
+  "kind": "personal",
+  "items": [
+    {
+      "key": "adora a bunda odeia o rosto|supernova ent",
+      "title": "Adora a bunda, odeia o rosto (feat. Veigh & Niink)",
+      "artist": "Supernova Ent",
+      "position": 0
+    },
+    {
+      "key": "overseas|d block europe",
+      "title": "Overseas",
+      "artist": "D-Block Europe",
+      "position": 1
+    },
+    {
+      "key": "pente 270|kyan",
+      "title": "Pente 270!",
+      "artist": "Kyan",
+      "position": 2
+    },
+    {
+      "key": "degenere|myke towers",
+      "title": "DEGENERE �� (feat. benny blanco)",
+      "artist": "Myke Towers",
+      "position": 3
+    },
+    {
+      "key": "100 gueto freestyle|niink",
+      "title": "100% GUETO (freestyle)",
+      "artist": "Niink",
+      "position": 4
+    },
+    {
+      "key": "pau pra toda obra|mc jacare",
+      "title": "Pau Pra Toda Obra",
+      "artist": "Mc Jacaré",
+      "position": 5
+    },
+    {
+      "key": "lset|l7nnon",
+      "title": "LSet",
+      "artist": "L7NNON",
+      "position": 6
+    },
+    {
+      "key": "os menino da nova|supernova ent",
+      "title": "Os Menino da Nova",
+      "artist": "Supernova Ent",
+      "position": 7
+    },
+    {
+      "key": "tango|supernova ent",
+      "title": "Tango (feat. Veigh & Niink)",
+      "artist": "Supernova Ent",
+      "position": 8
+    },
+    {
+      "key": "never say never|justin bieber",
+      "title": "Never Say Never",
+      "artist": "Justin Bieber",
+      "position": 9
+    },
+    {
+      "key": "franchise|travis scott",
+      "title": "FRANCHISE (feat. Young Thug & M.I.A.)",
+      "artist": "Travis Scott",
+      "position": 10
+    },
+    {
+      "key": "hotel lobby unc phew a colors show|quavo",
+      "title": "HOTEL LOBBY (Unc & Phew) - A COLORS SHOW",
+      "artist": "Quavo",
+      "position": 11
+    },
+    {
+      "key": "the box medley 9|the box",
+      "title": "THE BOX MEDLEY 9",
+      "artist": "THE BOX",
+      "position": 12
+    },
+    {
+      "key": "bonde da fumaca|recayd mob",
+      "title": "Bonde da Fumaça (feat. Murda Beatz)",
+      "artist": "Recayd Mob",
+      "position": 13
+    },
+    {
+      "key": "vicios|recayd mob",
+      "title": "Vícios (feat. The Boy, Jé Santiago, N.A.N.A. & Dfideliz)",
+      "artist": "Recayd Mob",
+      "position": 14
+    },
+    {
+      "key": "a bar song tipsy|shaboozey",
+      "title": "A Bar Song (Tipsy)",
+      "artist": "Shaboozey",
+      "position": 15
+    },
+    {
+      "key": "trap the fato|derek",
+      "title": "TRAP THE FATO",
+      "artist": "Derek",
+      "position": 16
+    },
+    {
+      "key": "eai bb|niink",
+      "title": "Eai BB",
+      "artist": "Niink",
+      "position": 17
+    },
+    {
+      "key": "the box medley 8|the box",
+      "title": "THE BOX MEDLEY 8",
+      "artist": "THE BOX",
+      "position": 18
+    },
+    {
+      "key": "noite dos perdidos|dj jv do sg",
+      "title": "Noite Dos Perdidos",
+      "artist": "DJ JV DO SG",
+      "position": 19
+    },
+    {
+      "key": "plaqtudum|recayd mob",
+      "title": "Plaqtudum",
+      "artist": "Recayd Mob",
+      "position": 20
+    },
+    {
+      "key": "faz dnv|kayg",
+      "title": "FAZ DNV",
+      "artist": "KayG",
+      "position": 21
+    },
+    {
+      "key": "eu tive um sonho|tchelo",
+      "title": "EU TIVE UM SONHO",
+      "artist": "Tchelo",
+      "position": 22
+    },
+    {
+      "key": "sugar on my tongue|tyler",
+      "title": "Sugar On My Tongue",
+      "artist": "Tyler, The Creator",
+      "position": 23
+    },
+    {
+      "key": "kit exclusivo|tchelo",
+      "title": "Kit Exclusivo",
+      "artist": "Tchelo",
+      "position": 24
+    },
+    {
+      "key": "amor eu to no estudio|orochi",
+      "title": "Amor Eu Tô no Estúdio",
+      "artist": "Orochi",
+      "position": 25
+    },
+    {
+      "key": "barbie|mc tuto",
+      "title": "Barbie",
+      "artist": "MC Tuto",
+      "position": 26
+    },
+    {
+      "key": "2025|mc tuto",
+      "title": "2025",
+      "artist": "MC Tuto",
+      "position": 27
+    },
+    {
+      "key": "plaque|kayg",
+      "title": "PLAQUE",
+      "artist": "KayG",
+      "position": 28
+    },
+    {
+      "key": "marginais boombap 4|felp 22",
+      "title": "Marginais Boombap 4",
+      "artist": "Felp 22",
+      "position": 29
+    },
+    {
+      "key": "trap the fato nois fez em 5|derek",
+      "title": "TRAP THE FATO NÓIS FEZ EM 5",
+      "artist": "Derek",
+      "position": 30
+    },
+    {
+      "key": "playboy|tchelo",
+      "title": "playboy",
+      "artist": "Tchelo",
+      "position": 31
+    },
+    {
+      "key": "faint|linkin park",
+      "title": "Faint",
+      "artist": "Linkin Park",
+      "position": 32
+    },
+    {
+      "key": "sup mate|young thug",
+      "title": "Sup Mate (feat. Future)",
+      "artist": "Young Thug",
+      "position": 33
+    },
+    {
+      "key": "escola particular|recayd mob",
+      "title": "Escola Particular",
+      "artist": "Recayd Mob",
+      "position": 34
+    },
+    {
+      "key": "bb do brasil|g a",
+      "title": "bb do brasil",
+      "artist": "G.A",
+      "position": 35
+    },
+    {
+      "key": "heavy is the crown|linkin park",
+      "title": "Heavy Is the Crown",
+      "artist": "Linkin Park",
+      "position": 36
+    },
+    {
+      "key": "no role modelz|j cole",
+      "title": "No Role Modelz",
+      "artist": "J. Cole",
+      "position": 37
+    },
+    {
+      "key": "butterfly effect|travis scott",
+      "title": "BUTTERFLY EFFECT",
+      "artist": "Travis Scott",
+      "position": 38
+    },
+    {
+      "key": "give it to me|timbaland",
+      "title": "Give It To Me",
+      "artist": "Timbaland",
+      "position": 39
+    },
+    {
+      "key": "somewhere i belong|linkin park",
+      "title": "Somewhere I Belong",
+      "artist": "Linkin Park",
+      "position": 40
+    },
+    {
+      "key": "menor quente|supernova ent",
+      "title": "Menor Quente (feat. Veigh & Ghard)",
+      "artist": "Supernova Ent",
+      "position": 41
+    },
+    {
+      "key": "so rock 3|major rd",
+      "title": "Só Rock 3",
+      "artist": "Major RD",
+      "position": 42
+    },
+    {
+      "key": "the box medley 6|the box",
+      "title": "THE BOX MEDLEY 6",
+      "artist": "THE BOX",
+      "position": 43
+    },
+    {
+      "key": "the emptiness machine|linkin park",
+      "title": "The Emptiness Machine",
+      "artist": "Linkin Park",
+      "position": 44
+    },
+    {
+      "key": "senta pros do momento|recayd mob",
+      "title": "Senta Pros Do Momento",
+      "artist": "Recayd Mob",
+      "position": 45
+    },
+    {
+      "key": "one time|justin bieber",
+      "title": "One Time",
+      "artist": "Justin Bieber",
+      "position": 46
+    },
+    {
+      "key": "ciumes retroativo|g a",
+      "title": "ciumes retroativo",
+      "artist": "G.A",
+      "position": 47
+    },
+    {
+      "key": "chapa maxima|boladin 211",
+      "title": "Chapa Máxima",
+      "artist": "Boladin 211",
+      "position": 48
+    },
+    {
+      "key": "seja bem vinda|niink",
+      "title": "Seja Bem-Vinda",
+      "artist": "Niink",
+      "position": 49
+    }
+  ]
+}

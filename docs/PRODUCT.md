@@ -60,7 +60,7 @@ Cumpre o tema (Ordenação) com profundidade: o aluno mostra que domina o algori
 
 ## 5. Como funciona (conceito técnico)
 
-1. **Coleta:** **Sua lista pessoal** (Spotify `GET /v1/me/top/tracks?time_range=short_term`) + **Deezer** (chart global) + **iTunes** (top songs EUA). Cada uma entrega uma lista ordenada; a **posição** de cada item é o **índice no array** da API (0-based) — uniforme entre as fontes.
+1. **Coleta:** **Sua lista pessoal** (Spotify `GET /v1/me/top/tracks?time_range=long_term&limit=50`) + **Deezer** (chart da região, top 100) + **iTunes** (top songs Brasil, RSS BR). Cada uma entrega uma lista ordenada; a **posição** de cada item é o **índice no array** da API (0-based) — uniforme entre as fontes.
 2. **Matching (universo comum):** cada música é convertida numa **chave** `título|artista` normalizada (minúscula, sem acentos, sem pontuação, sem sufixos como "(feat. …)", "(Remix)", "Explicit", etc.). Só os itens presentes em **≥2 fontes** entram na análise (interseção). Para cada fonte usamos a **ordem relativa dentro da interseção** (re-rank), não a posição original.
 3. **Correlação por par (Kendall-Tau):** para cada par de fontes (ex.: **eu × Deezer**, **eu × iTunes**, **Deezer × iTunes**), o algoritmo **re-indexa** o ranking de uma fonte segundo a ordem da outra e conta as **inversões** com **Merge Sort** → obtém concordantes/discordantes → calcula `tau`.
 4. **Consenso:** fusão **Borda** (soma de pontos por posição) gera um **super-ranking** "o melhor segundo todas as fontes" (conjunto: itens em ≥2 fontes).
@@ -93,7 +93,7 @@ Cumpre o tema (Ordenação) com profundidade: o aluno mostra que domina o algori
 - Aplicação web (HTML5/CSS3/JS puro — mesma stack caprichada do T1).
 - **Fontes (confirmado):** **Spotify pessoal** (`/me/top/tracks`, via **Authorization Code**/login) + **Deezer** + **Apple/iTunes** (sem chave).
 - **F1–F5** completas.
-- **Mini servidor Node** (módulo `http` nativo, sem dependências) para o fluxo de **login OAuth**: abre autorização, captura o callback em `localhost`, troca código por token, busca as top tracks, salva em `data/`.
+- **Mini servidor Node** (módulo `http` nativo, sem dependências) para o fluxo de **login OAuth**: abre autorização, captura o callback em `127.0.0.1:8888`, troca código por token, busca as top tracks, salva em `data/`.
 - **Super-ranking de consenso sobre itens presentes em ≥2 fontes** (a fusão Borda não considera música que aparece em só uma fonte).
 - **Mix híbrido:** Node coleta as APIs (resolvem CORS + guardam credenciais server-side) + app no browser que faz todo o cálculo e renderiza.
 - **Modo cache determinístico** (dados reais congelados em `data/`) para demo/relatório reprodutível.
@@ -114,11 +114,13 @@ Cumpre o tema (Ordenação) com profundidade: o aluno mostra que domina o algori
 
 | Fonte | Endpoint principal | Auth | Ranking disponível | Limitação |
 |---|---|---|---|---|
-| **Spotify (pessoal)** ⭐ | `GET /v1/me/top/tracks?time_range=short_term` | **Authorization Code** (login) | **Suas mais tocadas** (ranking pessoal) | Requer login do usuário + mini servidor p/ callback |
-| **Deezer** | `api.deezer.com/chart/0/tracks` | Nenhuma | Chart global top 100 | Catálogo/região específica |
-| **Apple/iTunes** | `itunes.apple.com/us/rss/topsongs/limit=100/json` | Nenhuma | Top songs (EUA) | EUA-centrado |
+| **Spotify (pessoal)** ⭐ | `GET /v1/me/top/tracks?time_range=long_term&limit=50` | **Authorization Code** (login) | **Suas mais tocadas** (ranking pessoal) | Requer login do usuário + mini servidor p/ callback |
+| **Deezer** | `api.deezer.com/chart/0/tracks?limit=100` | Nenhuma | Chart da região (top 100) | Regionaliza pelo IP (sem "global" real) |
+| **Apple/iTunes** | `itunes.apple.com/br/rss/topsongs/limit=100/json` | Nenhuma | Top songs (Brasil) | Storefront BR (alinhado ao Deezer BR) |
 
 > **Nota sobre o Spotify:** a tentativa anterior de usar a playlist editorial "Global Top 50" via *client-credentials* retornou **404** (limitação conhecida — playlists editoriais bloqueiam tokens de app). **Solução:** usar os dados **pessoais** (`/me/top/tracks`) com o fluxo **Authorization Code** (login), que **funciona de forma confiável**.
+
+> **Nota sobre região (2026-10-06):** o Deezer regionaliza o chart pelo IP (retornou **Brasil**) e o iTunes foi alinhado ao storefront **BR** (`/br/`) para comparar fontes da mesma região; o Deezer passou a usar `?limit=100` (sem o parâmetro devolvia só 10 itens). O Spotify passou a `time_range=long_term&limit=50`. Mesmo assim a interseção é baixa (0–3) para gosto de nicho — ver `DECISIONS.md` ADR-009.
 
 ### Veredito de viabilidade: ✅ **Viável**
 - **APIs gratuitas e acessíveis** (Deezer/iTunes sem chave; Spotify com login).
@@ -194,8 +196,8 @@ Camada de Serviço / Ingestão (Node.js)
   auth_server.js (módulo http nativo, 127.0.0.1:8888)
     └── login Spotify → callback → token → GET /v1/me/top/tracks → data/spotify_me.json
   fetch_sources.js
-    ├── Deezer  (chart global)   → data/deezer.json
-    └── iTunes  (top songs EUA)  → data/itunes.json
+    ├── Deezer  (chart da região) → data/deezer.json
+    └── iTunes  (top songs Brasil)  → data/itunes.json
           │
           ▼  dados reais (cache determinístico)
 Camada de Aplicação (web estática — abrir index.html)
@@ -231,6 +233,7 @@ Camada de Aplicação (web estática — abrir index.html)
 - A análise Kendall-Tau opera **apenas sobre a interseção** de cada par.
 - Dentro da interseção, cada fonte é **re-indexada pela ordem relativa** (não pela posição original).
 - **Threshold:** se um par tiver **< 15 itens** em comum, o par é **sinalizado** e **não entra** na matriz principal (fica como "interseção insuficiente").
+- **Caso "bolha" (resultado válido):** se **todos** os pares ficarem abaixo do threshold — cenário real de gosto muito divergente dos charts — a matriz fica vazia e o produto deve exibir o **match-rate** por par e a leitura **"seu gosto é bolha"** como **resultado de primeira classe** (*não* como erro ou lista vazia). Ver `DECISIONS.md` ADR-010.
 
 ### 12.4 Super-ranking de consenso (Borda)
 - **Conjunto:** somente itens presentes em **≥2 fontes** (a união qualificada).
@@ -249,7 +252,7 @@ Camada de Aplicação (web estática — abrir index.html)
 - Fluxo **Authorization Code** (login do usuário), **não** client-credentials.
 - **Redirect URI:** `http://127.0.0.1:8888/callback` (importante neste fluxo — precisa ser exato e configurado no app do Spotify, idêntico ao listen do `auth_server.js`).
 - **Escopo:** `user-top-read` (para `/me/top/tracks`). Opcional: `user-read-recently-played` (para `F9`).
-- Endpoint: `GET /v1/me/top/tracks?time_range=short_term` (e `medium_term`/`long_term` como alternativas).
+- Endpoint: `GET /v1/me/top/tracks?time_range=long_term&limit=50` (configurável: `SPOTIFY_TIME_RANGE`, `SPOTIFY_TOP_LIMIT`).
 - **Token:** guardar `access_token` + `refresh_token`; renovar com `grant_type=refresh_token`; cachear resultados em `data/spotify_me.json`.
 
 ### 12.8 Dados e reprodutibilidade
