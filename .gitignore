@@ -5,3 +5,4 @@
 
 # Spotify OAuth tokens (local only; never versionar)
 /ranking-consensus/.spotify_tokens.json
+.gstack/
